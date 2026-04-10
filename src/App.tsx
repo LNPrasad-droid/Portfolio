@@ -131,12 +131,12 @@ export default function App() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
           >
-            <span className="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest uppercase bg-purple-500/10 border border-purple-500/20 rounded-full text-purple-400">
+            <span className="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-[0.2em] uppercase bg-emerald-500/10 border border-emerald-600/20 rounded-full text-emerald-700">
               Available for Opportunities
             </span>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <h1 className="hero-display text-5xl md:text-7xl font-extrabold mb-6 leading-[0.95]">
               Building Intelligent Systems with <br />
-              <span className="glow-text">Artificial Intelligence and Machine learning, automations</span>
+              <span className="hero-accent-text">Artificial Intelligence and Machine learning, automations</span>
             </h1>
             <p className="text-slate-400 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed">
               Final year AIML engineering student passionate about Artificial Intelligence, Machine Learning, and building scalable automations. I build real-world AI systems that solve practical problems.
