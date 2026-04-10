@@ -142,10 +142,10 @@ export default function App() {
               Final year AIML engineering student passionate about Artificial Intelligence, Machine Learning, and building scalable automations. I build real-world AI systems that solve practical problems.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="#projects" className="px-8 py-4 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(168,85,247,0.4)] flex items-center justify-center gap-2">
+              <a href="#projects" className="px-8 py-4 text-base md:text-lg bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(168,85,247,0.4)] flex items-center justify-center gap-2">
                 View My Projects <ChevronRight size={18} />
               </a>
-              <a href="#contact" className="px-8 py-4 bg-slate-900 hover:bg-indigo-600 text-white font-bold rounded-xl transition-all shadow-[0_10px_24px_rgba(15,23,42,0.18)] flex items-center justify-center gap-2">
+              <a href="#contact" className="px-8 py-4 text-base md:text-lg bg-emerald-700 hover:bg-emerald-600 text-amber-50 font-bold rounded-xl transition-all shadow-[0_10px_24px_rgba(6,95,70,0.22)] flex items-center justify-center gap-2">
                 Get in Touch
               </a>
             </div>
