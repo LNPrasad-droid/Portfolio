@@ -145,7 +145,7 @@ export default function App() {
               <a href="#projects" className="px-8 py-4 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(168,85,247,0.4)] flex items-center justify-center gap-2">
                 View My Projects <ChevronRight size={18} />
               </a>
-              <a href="#contact" className="px-8 py-4 glass-panel hover:bg-white/10 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2">
+              <a href="#contact" className="px-8 py-4 bg-slate-900 hover:bg-indigo-600 text-white font-bold rounded-xl transition-all shadow-[0_10px_24px_rgba(15,23,42,0.18)] flex items-center justify-center gap-2">
                 Get in Touch
               </a>
             </div>
