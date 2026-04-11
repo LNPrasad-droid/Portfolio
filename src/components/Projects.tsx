@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ExternalLink, Github, Satellite, Brain, Eye, MessageSquare, ShieldAlert, Zap } from 'lucide-react';
+import { Satellite, Brain, Eye, MessageSquare, ShieldAlert, Zap } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 const projects = [
@@ -107,14 +107,6 @@ export const Projects: React.FC = () => {
                   project.featured ? "bg-ai-green/20 text-ai-green" : "bg-white/5 text-white/70"
                 )}>
                   <project.icon size={24} />
-                </div>
-                <div className="flex gap-3">
-                  <a href="https://github.com/LNPrasad-droid" target="_blank" rel="noreferrer" className="text-white/40 hover:text-white transition-colors">
-                    <Github size={20} />
-                  </a>
-                  <button className="text-white/40 hover:text-white transition-colors">
-                    <ExternalLink size={20} />
-                  </button>
                 </div>
               </div>
 
