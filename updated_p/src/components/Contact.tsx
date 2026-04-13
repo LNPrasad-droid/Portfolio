@@ -34,7 +34,7 @@ export const Contact: React.FC = () => {
               <div>
                 <p className="text-xs font-mono text-white/30 uppercase tracking-widest mb-1">LinkedIn</p>
                 <a href="https://www.linkedin.com/in/lakshmi-narsimha-prasad-44306827b/" target="_blank" rel="noreferrer" className="text-lg font-medium hover:text-electric-blue transition-colors">
-                  lakshmi-narsimha-prasad
+                  lakshmi-narsimha-prasad-44306827b
                 </a>
               </div>
             </div>

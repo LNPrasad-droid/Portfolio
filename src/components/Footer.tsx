@@ -24,7 +24,7 @@ export const Footer: React.FC = () => {
           <a href="https://github.com/LNPrasad-droid" target="_blank" rel="noreferrer" className="text-white/40 hover:text-ai-green transition-colors">
             <Github size={20} />
           </a>
-          <a href="https://linkedin.com/in/lakshmi-narsimha-prasad" target="_blank" rel="noreferrer" className="text-white/40 hover:text-electric-blue transition-colors">
+          <a href="https://www.linkedin.com/in/lakshmi-narsimha-prasad-44306827b/" target="_blank" rel="noreferrer" className="text-white/40 hover:text-electric-blue transition-colors">
             <Linkedin size={20} />
           </a>
           <a href="mailto:leo913173@gmail.com" className="text-white/40 hover:text-white transition-colors">
