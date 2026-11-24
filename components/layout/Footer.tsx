@@ -11,8 +11,8 @@ export function Footer() {
             © {new Date().getFullYear()} {profile.fullName}
           </span>
         </div>
-        <p className="font-mono-tag text-xs text-text-tertiary">
-          Built with Next.js, Three.js & Framer Motion
+        <p className="text-xs text-text-muted">
+          Built with Next.js and three.js. Sun position is live; the satellite orbit is simulated.
         </p>
       </div>
     </footer>

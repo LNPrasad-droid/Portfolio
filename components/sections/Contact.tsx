@@ -1,57 +1,69 @@
 "use client";
 
-import { motion } from "framer-motion";
-import * as Icons from "lucide-react";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { useState } from "react";
 import { contactLinks } from "@/data/profile";
 
 export function Contact() {
+  const email = contactLinks.find((l) => l.id === "email");
+  const others = contactLinks.filter((l) => l.id !== "email");
+  const [copied, setCopied] = useState(false);
+
+  const copy = async () => {
+    if (!email) return;
+    try {
+      await navigator.clipboard.writeText(email.value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.location.href = email.href;
+    }
+  };
+
   return (
-    <section id="contact" className="relative py-28 sm:py-32">
-      <div className="mx-auto max-w-5xl px-6">
-        <SectionHeading
-          eyebrow="Contact"
-          title="Let's build something"
-          description="Every way to reach me, in one place. Pick whichever works best for you."
-          align="center"
-          className="mx-auto text-center"
-        />
+    <section id="contact" className="relative py-24 sm:py-32" aria-labelledby="contact-title">
+      <div className="mx-auto max-w-6xl px-6">
+        <h2 id="contact-title" className="display text-3xl font-semibold sm:text-4xl">
+          Contact
+        </h2>
+        <p className="mt-4 max-w-xl text-base leading-relaxed text-text-muted">
+          Hiring for AI/ML, data science or data engineering? Email is the fastest way to reach me.
+        </p>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {contactLinks.map((link, i) => {
-            const Icon =
-              (Icons as unknown as Record<string, Icons.LucideIcon>)[link.icon] ?? Icons.Link;
+        {email && (
+          <div className="mt-8 flex flex-wrap items-center gap-4">
+            <a
+              href={email.href}
+              className="display break-all text-2xl font-semibold text-text decoration-signal decoration-2 underline-offset-8 hover:underline sm:text-4xl"
+            >
+              {email.value}
+            </a>
+            <button
+              type="button"
+              onClick={copy}
+              className="rounded-sm border border-line-strong px-3 py-1.5 text-sm text-text transition-colors hover:border-signal"
+              aria-live="polite"
+            >
+              {copied ? "Copied" : "Copy email"}
+            </button>
+          </div>
+        )}
 
-            return (
-              <motion.a
-                key={link.id}
+        <ul className="mt-12 grid border-t border-line sm:grid-cols-2 lg:grid-cols-4">
+          {others.map((link) => (
+            <li key={link.id} className="border-b border-line sm:odd:border-r lg:border-r lg:last:border-r-0">
+              <a
                 href={link.href}
                 target={link.href.startsWith("http") ? "_blank" : undefined}
                 rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.4, delay: i * 0.06 }}
-                whileHover={{ y: -3 }}
-                className="group surface-card flex items-center gap-4 rounded-2xl p-5 transition-colors hover:border-accent-blue/40"
+                download={link.id === "resume" ? true : undefined}
+                className="block px-1 py-5 transition-colors hover:text-signal sm:px-5"
               >
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent-blue/10 text-accent-cyan transition-colors group-hover:bg-accent-blue/20">
-                  <Icon size={20} />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="font-mono-tag text-[11px] uppercase tracking-wider text-text-tertiary">
-                    {link.label}
-                  </p>
-                  <p className="truncate text-sm font-medium text-text-primary">{link.value}</p>
-                </div>
-                <Icons.ArrowUpRight
-                  size={16}
-                  className="shrink-0 text-text-tertiary opacity-0 transition-opacity group-hover:opacity-100"
-                />
-              </motion.a>
-            );
-          })}
-        </div>
+                <span className="block text-sm text-text-muted">{link.label}</span>
+                <span className="data mt-1 block truncate text-sm text-text">{link.value}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

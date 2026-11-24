@@ -1,218 +1,261 @@
 import type { Project } from "@/types";
 
 /**
- * Placeholder thumbnails/gallery images.
- * These use a consistent dimension and naming scheme so real screenshots
- * can be dropped into /public/images/projects/<slug>/ later without
- * touching any component or layout code — only these paths need updating.
+ * Every claim below is backed by code in the linked repository (or, for private
+ * work, in the private repository). Galleries stay empty until real screenshots
+ * are added to /public/images/projects/<slug>/; the gallery section is hidden
+ * while empty. Add measured results only once they can be reproduced.
  */
 
 export const projects: Project[] = [
   {
-    id: "ron-ai",
-    slug: "ron-ai",
-    title: "RON AI",
-    category: "Agentic AI Platform",
+    id: "crop-detection",
+    band: "vegetation",
+    data: "Sentinel-1 SAR, Sentinel-2 MSI, KML field boundaries",
+    slug: "geospatial-crop-detection",
+    title: "Geospatial Crop Detection",
+    category: "Earth Observation · Machine Learning",
+    context: "MITCON internship",
     summary:
-      "A multi-agent automation platform that lets users describe a goal in natural language and have a team of AI agents plan, execute, and report back — with full visibility into every step.",
-    thumbnail: "/images/projects/ron-ai/thumbnail.svg",
-    technologies: ["Next.js", "TypeScript", "FastAPI", "LangGraph", "Vector DB", "Docker"],
-    featured: true,
-    caseStudy: {
-      overview:
-        "RON AI is an agentic automation platform built for teams that need AI to do multi-step work — not just answer questions. Users describe a goal, and a coordinated set of agents breaks it into tasks, calls the right tools, and surfaces a transparent execution trace.",
-      problemStatement:
-        "Most AI tools are single-turn: ask a question, get an answer. Real operational work requires planning, tool use, error recovery, and accountability — none of which a simple chat interface provides. Teams needed a way to delegate multi-step tasks to AI without losing visibility or control over what the agents were actually doing.",
-      solution:
-        "I designed an orchestration layer where a planner agent decomposes a goal into a task graph, specialist agents execute each node using scoped tools, and a supervisor monitors progress and handles retries. Every step is streamed to the UI in real time, so users see exactly what the system is doing and can intervene if needed.",
-      architecture: [
-        { id: "a1", label: "User", description: "Describes a goal in natural language through the platform UI." },
-        { id: "a2", label: "Frontend", description: "Next.js app streams the live agent execution graph and task state." },
-        { id: "a3", label: "Backend", description: "FastAPI service manages sessions, auth, and task queueing." },
-        { id: "a4", label: "AI Layer", description: "LangGraph-based planner and specialist agents execute the task graph." },
-        { id: "a5", label: "Database", description: "Vector store and document DB persist context, memory, and results." },
-        { id: "a6", label: "Response", description: "Structured output and execution trace returned to the user in real time." },
-      ],
-      techStack: ["Next.js", "TypeScript", "Tailwind CSS", "FastAPI", "LangGraph", "PostgreSQL", "Vector DB", "Redis", "Docker"],
-      keyFeatures: [
-        "Real-time visualization of agent task graphs as they execute",
-        "Tool-calling framework with scoped permissions per agent role",
-        "Automatic retry and error-recovery logic for failed tool calls",
-        "Retrieval-augmented grounding for domain-specific knowledge",
-        "Full audit trail of every agent decision and tool invocation",
-      ],
-      challenges: [
-        "Keeping agent execution transparent without overwhelming users with raw logs",
-        "Designing tool-call validation that catches failures before they cascade across a multi-step plan",
-        "Balancing agent autonomy with predictable, debuggable behavior in production",
-      ],
-      results: [
-        "Shipped a working end-to-end platform from architecture through deployment",
-        "Reduced agent task failure rate through improved validation and retry logic",
-        "Established an evaluation harness used to benchmark agent reliability across task types",
-      ],
-      lessonsLearned: [
-        "Observability is as important as capability for agentic systems — users trust what they can see",
-        "Constraining agent autonomy with explicit tool scopes prevents most cascading failures",
-        "Streaming intermediate state to the UI changes how users perceive AI reliability, even when underlying accuracy is unchanged",
-      ],
-      gallery: [
-        { id: "g1", src: "/images/projects/ron-ai/screen-1.svg", alt: "RON AI dashboard overview" },
-        { id: "g2", src: "/images/projects/ron-ai/screen-2.svg", alt: "RON AI agent execution graph" },
-        { id: "g3", src: "/images/projects/ron-ai/screen-3.svg", alt: "RON AI task detail view" },
-      ],
-    },
-  },
-  {
-    id: "agentic-remote-sensing",
-    slug: "agentic-remote-sensing-automation",
-    title: "Agentic AI Remote Sensing Automation Platform",
-    category: "Geospatial AI · Agentic AI",
-    summary:
-      "An autonomous pipeline where AI agents monitor satellite feeds, detect meaningful change, and trigger downstream analysis — without a human manually reviewing every pass.",
-    thumbnail: "/images/projects/agentic-remote-sensing/thumbnail.svg",
-    technologies: ["Python", "LangGraph", "PyTorch", "AWS", "Google Earth Engine"],
-    featured: true,
-    caseStudy: {
-      overview:
-        "This platform automates the otherwise manual process of reviewing satellite imagery for meaningful change — using agents that decide when new imagery warrants deeper analysis and route it to the right model automatically.",
-      problemStatement:
-        "Remote sensing teams generate far more satellite imagery than they can manually review. Most passes show no meaningful change, but the ones that do need fast, specific analysis — and manual triage doesn't scale across large monitoring areas.",
-      solution:
-        "I built an agentic pipeline where a monitoring agent ingests new imagery on a schedule, a change-detection model flags anomalies, and a routing agent decides which specialist model (crop health, land-cover change, anomaly detection) should analyze the flagged region. Only meaningful events reach a human reviewer.",
-      architecture: [
-        { id: "a1", label: "User", description: "Defines monitoring regions and thresholds for the pipeline." },
-        { id: "a2", label: "Frontend", description: "Lightweight dashboard for reviewing flagged events." },
-        { id: "a3", label: "Backend", description: "Scheduler and task queue manage ingestion and agent runs." },
-        { id: "a4", label: "AI Layer", description: "Change-detection and routing agents triage imagery automatically." },
-        { id: "a5", label: "Database", description: "Spatial database stores imagery metadata and detection history." },
-        { id: "a6", label: "Response", description: "Flagged events with analysis summaries delivered to reviewers." },
-      ],
-      techStack: ["Python", "LangGraph", "PyTorch", "AWS Lambda", "AWS S3", "Google Earth Engine", "PostGIS"],
-      keyFeatures: [
-        "Scheduled ingestion of multispectral and SAR satellite imagery",
-        "Automated change-detection to filter out routine, unchanged passes",
-        "Agent-based routing to specialist models based on detected change type",
-        "Spatial database tracking detection history per monitoring region",
-      ],
-      challenges: [
-        "Handling inconsistent satellite revisit times and cloud cover gaps in the data feed",
-        "Reducing false-positive change detections without missing genuine events",
-        "Designing routing logic that generalizes across very different monitoring use cases",
-      ],
-      results: [
-        "Cut manual review volume substantially by automatically filtering routine, unchanged imagery",
-        "Demonstrated reliable routing across multiple distinct analysis types from a single pipeline",
-      ],
-      lessonsLearned: [
-        "Geospatial agentic systems need domain-specific guardrails — generic agent frameworks don't account for coordinate systems or sensor quirks out of the box",
-        "Change-detection thresholds matter more than model sophistication for overall pipeline usefulness",
-      ],
-      gallery: [
-        { id: "g1", src: "/images/projects/agentic-remote-sensing/screen-1.svg", alt: "Monitoring dashboard" },
-        { id: "g2", src: "/images/projects/agentic-remote-sensing/screen-2.svg", alt: "Change detection map view" },
-        { id: "g3", src: "/images/projects/agentic-remote-sensing/screen-3.svg", alt: "Event review panel" },
-      ],
-    },
-  },
-  {
-    id: "solar-hotspot-detection",
-    slug: "solar-hotspot-anomaly-detection",
-    title: "Solar Hotspot & Anomaly Detection",
-    category: "Computer Vision",
-    summary:
-      "A computer vision system that identifies thermal hotspots and physical defects in solar panel arrays from drone-captured imagery, accelerating field inspections.",
-    thumbnail: "/images/projects/solar-hotspot/thumbnail.svg",
-    technologies: ["Python", "PyTorch", "OpenCV", "scikit-learn"],
-    caseStudy: {
-      overview:
-        "A CNN-based detection system that processes thermal imagery captured by inspection drones to flag overheating cells and physical anomalies across large solar installations.",
-      problemStatement:
-        "Manual thermal inspection of solar farms is slow and inconsistent — inspectors review thousands of thermal frames per site, and subtle hotspots are easy to miss, leading to undetected efficiency losses or fire risk.",
-      solution:
-        "I trained a CNN-based detector on labeled thermal imagery to localize hotspots and classify defect types, paired with a preprocessing pipeline that normalizes for ambient temperature and panel angle variation across flights.",
-      architecture: [
-        { id: "a1", label: "User", description: "Inspector uploads drone-captured thermal imagery from a flight." },
-        { id: "a2", label: "Frontend", description: "Upload interface and results viewer for flagged panels." },
-        { id: "a3", label: "Backend", description: "Processing service handles image normalization and batching." },
-        { id: "a4", label: "AI Layer", description: "CNN model detects and classifies thermal anomalies per panel." },
-        { id: "a5", label: "Database", description: "Stores per-site detection history for trend tracking over time." },
-        { id: "a6", label: "Response", description: "Annotated imagery and a defect report returned to the inspector." },
-      ],
-      techStack: ["Python", "PyTorch", "OpenCV", "scikit-learn", "NumPy"],
-      keyFeatures: [
-        "Automatic normalization for ambient temperature and flight angle variance",
-        "Per-panel hotspot localization with defect-type classification",
-        "Batch processing of full-site thermal imagery sets",
-        "Exportable inspection reports with annotated imagery",
-      ],
-      challenges: [
-        "Variable ambient conditions across flights made raw thermal values inconsistent and required careful normalization",
-        "Limited labeled defect data required heavy use of augmentation and transfer learning",
-      ],
-      results: [
-        "Delivered a working hotspot detection prototype that significantly reduced manual review time per site",
-        "Achieved strong precision on held-out flights from sites not seen during training",
-      ],
-      lessonsLearned: [
-        "Preprocessing and normalization mattered more to final accuracy than model architecture choice",
-        "Field conditions introduce noise that's easy to underestimate when working from clean benchmark datasets",
-      ],
-      gallery: [
-        { id: "g1", src: "/images/projects/solar-hotspot/screen-1.svg", alt: "Thermal imagery upload interface" },
-        { id: "g2", src: "/images/projects/solar-hotspot/screen-2.svg", alt: "Detected hotspot annotations" },
-        { id: "g3", src: "/images/projects/solar-hotspot/screen-3.svg", alt: "Site-level inspection report" },
-      ],
-    },
-  },
-  {
-    id: "crop-classification",
-    slug: "geospatial-crop-classification",
-    title: "Geospatial Crop Classification",
-    category: "Geospatial AI",
-    summary:
-      "A segmentation pipeline that classifies crop types across large agricultural regions using multispectral satellite imagery, supporting yield estimation and land-use monitoring.",
+      "Per-crop detectors that decide whether a farm polygon grows cotton, rice, mango, papaya or pomegranate, using Sentinel-1 radar and Sentinel-2 optical time series from Google Earth Engine.",
     thumbnail: "/images/projects/crop-classification/thumbnail.svg",
-    technologies: ["Python", "PyTorch", "QGIS", "PostGIS", "Google Earth Engine"],
+    technologies: ["Google Earth Engine", "Sentinel-1/2", "XGBoost", "LightGBM", "TensorFlow", "FastAPI"],
+    featured: true,
+    codeUrl: "https://github.com/LNPrasad-droid/cropdetection",
     caseStudy: {
       overview:
-        "A segmentation model trained on multispectral satellite imagery to classify crop types at the field level across an agricultural region, supporting downstream yield estimation.",
+        "Five binary crop detectors (crop vs. not-crop) built on multi-temporal satellite features. A user uploads a KML of field boundaries and gets a probability and confidence label for each field.",
       problemStatement:
-        "Accurate, up-to-date crop-type maps are essential for yield forecasting and land-use monitoring, but manual ground surveys are slow and don't scale to large regions or frequent updates.",
+        "Knowing which crop is growing in which field normally means ground surveys. Optical imagery alone struggles with clouds during the monsoon, and crops look alike on a single date. A detector needs the season's time series and radar data that sees through clouds.",
       solution:
-        "I built a pipeline that pulls multispectral imagery via Google Earth Engine, generates time-series spectral features per field, and trains a segmentation model to classify crop type at the pixel level, validated against ground-truth survey data.",
+        "Field polygons from KML are sent to Google Earth Engine, which builds cloud-masked Sentinel-2 composites and Sentinel-1 SAR backscatter (converted to dB, speckle-filtered) over monthly windows. Per-field statistics become spectral-index and phenology features, and a separate model is trained per crop.",
       architecture: [
-        { id: "a1", label: "User", description: "Analyst defines a region of interest and growing season." },
-        { id: "a2", label: "Frontend", description: "QGIS-based visualization layer for reviewing classification maps." },
-        { id: "a3", label: "Backend", description: "Pipeline service manages imagery requests and feature extraction." },
-        { id: "a4", label: "AI Layer", description: "Segmentation model classifies crop type from spectral time series." },
-        { id: "a5", label: "Database", description: "PostGIS stores classified field boundaries and historical results." },
-        { id: "a6", label: "Response", description: "Crop-type map and confidence scores delivered per field." },
+        { id: "a1", label: "KML field polygons", description: "Labelled crop and non-crop fields, parsed into GeoPandas geometries." },
+        { id: "a2", label: "Google Earth Engine", description: "Sentinel-2 SR (cloud-masked) and Sentinel-1 GRD (VV/VH, dB) composites per time window." },
+        { id: "a3", label: "Feature engineering", description: "NDVI, EVI, NDWI, SAVI and SAR ratios; phenology metrics (slope, peaks, area under curve); GLCM texture." },
+        { id: "a4", label: "Per-crop models", description: "Random Forest + calibration (cotton, rice), LightGBM (mango), XGBoost (papaya, pomegranate), Keras LSTM on NDVI sequences (pomegranate)." },
+        { id: "a5", label: "Spatial validation", description: "GroupKFold / GroupShuffleSplit by KML file or region, plus explicit leakage checks." },
+        { id: "a6", label: "FastAPI inference", description: "Upload a KML, get per-field probability, confidence label and saved prediction files." },
       ],
-      techStack: ["Python", "PyTorch", "TensorFlow", "Google Earth Engine", "PostGIS", "QGIS"],
+      techStack: ["Python", "Google Earth Engine", "Sentinel-2", "Sentinel-1 SAR", "GeoPandas", "Shapely", "scikit-learn", "XGBoost", "LightGBM", "TensorFlow / Keras", "Segment Anything", "FastAPI"],
       keyFeatures: [
-        "Automated multispectral time-series feature extraction per field",
-        "Pixel-level segmentation with per-field confidence aggregation",
-        "PostGIS-backed storage for historical comparison across seasons",
-        "QGIS-compatible outputs for analyst review and validation",
+        "Optical + radar fusion so cloudy months still contribute data",
+        "Phenology features that describe how a crop greens up and senesces over the season",
+        "Optional Segment Anything (SAM) field segmentation for cotton",
+        "Negative-sample generation and self-training to reduce false positives",
+        "One FastAPI service per crop with KML upload",
       ],
       challenges: [
-        "Cloud cover gaps in optical imagery required incorporating SAR data for consistent coverage",
-        "Crop phenology varies by region, requiring season-aware feature engineering rather than fixed calendar windows",
+        "Neighbouring pixels from the same field leak between train and test sets if you split randomly, so splits are grouped by field file and region",
+        "Cloud gaps in Sentinel-2 needed fallbacks and SAR features to keep every field's time series usable",
+        "Very different crop calendars (orchards vs. seasonal crops) needed crop-specific time windows",
       ],
       results: [
-        "Achieved strong validation accuracy across multiple growing seasons and regions",
-        "Produced field-level maps usable directly by analysts without additional GIS processing",
+        "Five working crop detectors with FastAPI inference",
+        "Spatially grouped validation and leakage checks built into training",
       ],
       lessonsLearned: [
-        "Combining optical and SAR data meaningfully improved robustness to cloud cover",
-        "Season-aware feature windows outperformed fixed calendar-based features across regions",
+        "How you split the data matters as much as which model you choose",
+        "Radar is what makes monsoon-season crop mapping reliable",
       ],
-      gallery: [
-        { id: "g1", src: "/images/projects/crop-classification/screen-1.svg", alt: "Crop classification map view" },
-        { id: "g2", src: "/images/projects/crop-classification/screen-2.svg", alt: "Field-level confidence overlay" },
-        { id: "g3", src: "/images/projects/crop-classification/screen-3.svg", alt: "Seasonal comparison view" },
+      gallery: [],
+    },
+  },
+  {
+    id: "solar-thermal-risk",
+    band: "thermal",
+    data: "Landsat-8 TIRS (LST), Sentinel-2 NDVI, ERA5 / Open-Meteo weather",
+    slug: "solar-thermal-risk-monitoring",
+    title: "Solar Plant Thermal-Risk Monitoring",
+    category: "Earth Observation · Energy",
+    context: "MITCON internship",
+    codeNote: "Code is private: it contains client plant data.",
+    summary:
+      "Satellite-based thermal risk screening for ~2,000 solar panel tables: Landsat-8 surface temperature and Sentinel-2 NDVI anomalies, a zone-level risk index, energy-loss estimates and an LLM-written maintenance report.",
+    thumbnail: "/images/projects/solar-hotspot/thumbnail.svg",
+    technologies: ["Google Earth Engine", "Landsat-8 LST", "XGBoost", "CatBoost", "Folium", "OpenRouter"],
+    featured: true,
+    caseStudy: {
+      overview:
+        "A pipeline that screens a utility-scale solar plant from space, ranks zones by thermal risk, estimates energy loss, and drafts a maintenance plan, so drone and field crews know where to inspect first.",
+      problemStatement:
+        "Inspecting every table of a large plant on foot or by drone is slow. Free satellite data can't see individual cells, but it can flag zones that run hotter than their own history and deserve a closer look.",
+      solution:
+        "Panel-table polygons are sent to Google Earth Engine for Landsat-8 surface temperature and Sentinel-2 NDVI composites. Each table gets a thermal anomaly against its own baseline and a plant-wide z-score, combined into a weighted risk index that is aggregated by zone. A physics-informed temperature model and boosting regressors add hourly context, and an LLM turns the statistics into a maintenance brief.",
+      architecture: [
+        { id: "a1", label: "Panel-table KMLs", description: "About 2,000 table polygons grouped into spatial zones." },
+        { id: "a2", label: "Google Earth Engine", description: "Landsat-8 ST_B10 → land surface temperature; Sentinel-2 NDVI; 30-day composites per table." },
+        { id: "a3", label: "Anomaly features", description: "Per-table temperature baseline and anomaly, plant-wide z-score, NDVI change." },
+        { id: "a4", label: "Temperature modelling", description: "NOCT/albedo cell-temperature model with ERA5 / Open-Meteo weather; XGBoost, LightGBM and CatBoost regressors." },
+        { id: "a5", label: "Risk index", description: "Weighted thermal, vegetation and health components, aggregated by zone; energy-loss estimate per table." },
+        { id: "a6", label: "Maps & LLM report", description: "Interactive Folium zone maps, KPI charts and an OpenRouter-generated maintenance report." },
       ],
+      techStack: ["Python", "Google Earth Engine", "Landsat-8", "Sentinel-2", "GeoPandas", "scikit-learn", "XGBoost", "LightGBM", "CatBoost", "xarray / ERA5", "MySQL", "Folium", "Matplotlib", "OpenRouter"],
+      keyFeatures: [
+        "Zone-level thermal risk index combining temperature, vegetation and health signals",
+        "Physics-informed panel temperature with weather data",
+        "Energy-loss estimates per table and per zone",
+        "Interactive zone and hotspot maps",
+        "LLM-generated, zone-prioritised maintenance recommendations",
+      ],
+      challenges: [
+        "Landsat thermal pixels are 30 m while a panel table is a few metres wide, so the output is honest zone- and table-level screening rather than cell-level defect detection",
+        "LLM reports must be checked against the source statistics before they reach a client",
+      ],
+      results: [
+        "About 2,000 panel tables screened and grouped into zones for prioritised inspection",
+        "End-to-end pipeline from satellite data to maps and a written maintenance plan",
+      ],
+      lessonsLearned: [
+        "Know the resolution limits of your sensor and say them up front",
+        "Satellite screening works best as a way to point drones and crews at the right zones",
+      ],
+      gallery: [],
+    },
+  },
+  {
+    id: "agentic-geoai",
+    band: "radar",
+    data: "Sentinel-2, Landsat 8/9, user AOIs, reference documents",
+    slug: "agentic-geoai-platform",
+    title: "Agentic GeoAI Platform",
+    category: "Agentic AI · Earth Observation",
+    context: "Personal project",
+    codeUrl: "https://github.com/LNPrasad-droid/ai_report",
+    summary:
+      "Ask a question about an area of interest and a planner routes it through satellite, GIS, ML, retrieval and report agents, with every step traced and shown on a dashboard.",
+    thumbnail: "/images/projects/agentic-remote-sensing/thumbnail.svg",
+    technologies: ["FastAPI", "MongoDB", "ChromaDB", "Google Earth Engine", "Ollama", "React"],
+    featured: true,
+    caseStudy: {
+      overview:
+        "A full-stack platform where specialist agents handle each part of an Earth-observation question, from finding imagery to writing the report, and the user can watch the execution timeline.",
+      problemStatement:
+        "Answering 'is the vegetation in this area healthy?' takes several tools: imagery search, index calculation, a model, background documents and a written summary. Stitching them together by hand is slow and hard to trace.",
+      solution:
+        "A planner maps the question to an intent and a list of agents. An orchestrator runs them in order on a shared context, keeps going when one fails, and records a trace of each step with timing. The React dashboard shows jobs, maps and the execution timeline.",
+      architecture: [
+        { id: "a1", label: "Planner", description: "Maps the query to an intent (analyse area, detect anomalies, explain, report) and picks agents. Rule-based today, built behind an interface so an LLM planner can replace it." },
+        { id: "a2", label: "Orchestrator", description: "Runs agents in sequence on a shared context, degrades gracefully on failure, records an execution trace." },
+        { id: "a3", label: "Satellite & GIS agents", description: "Earth Engine search (Sentinel-2, Landsat 8/9), cloud masking, NDVI/NDWI/NDMI/SAVI/EVI/NDBI, zonal statistics." },
+        { id: "a4", label: "ML & Retrieval agents", description: "Registered crop models with confidence and feature importance; RAG with sentence-transformers and ChromaDB." },
+        { id: "a5", label: "Report agent", description: "Prompt templates and a local LLM through Ollama." },
+        { id: "a6", label: "React dashboard", description: "AOI upload, Leaflet map preview, jobs, execution timeline, monitoring charts, Firebase login." },
+      ],
+      techStack: ["FastAPI", "Pydantic", "MongoDB (Motor)", "ChromaDB", "sentence-transformers", "Google Earth Engine", "Ollama", "Firebase Auth", "React", "Vite", "Leaflet", "Recharts", "pytest"],
+      keyFeatures: [
+        "Planner → orchestrator → specialist agents with a per-step execution trace",
+        "Satellite search and spectral indices through Google Earth Engine",
+        "Document retrieval with embeddings and ChromaDB",
+        "LLM-written reports",
+        "Dashboard with map, job timeline and monitoring charts",
+      ],
+      challenges: [
+        "Keeping each agent independent so one failure doesn't stop the whole job",
+        "Making the execution visible to the user without dumping raw logs",
+      ],
+      results: [
+        "Layered FastAPI backend with versioned routers, auth and monitoring middleware",
+        "25 pytest tests across agents and services",
+      ],
+      lessonsLearned: [
+        "Traceability is what makes a multi-step AI system debuggable",
+        "Design the planner behind an interface so it can grow from rules to an LLM",
+      ],
+      gallery: [],
+    },
+  },
+  {
+    id: "ron",
+    band: "language",
+    data: "Chat messages, diary entries, mood logs",
+    slug: "ron-mental-health-companion",
+    title: "RON: AI Mental-Health Companion",
+    category: "Applied NLP · Generative AI",
+    context: "Personal project",
+    codeNote: "Code not public yet.",
+    summary:
+      "A CBT-style support chatbot that pairs an LLM with layered sentiment analysis, crisis-keyword safety escalation, a diary and a mood tracker.",
+    thumbnail: "/images/projects/ron-ai/thumbnail.svg",
+    technologies: ["Flask", "OpenRouter", "DistilBERT", "XLM-RoBERTa", "NLTK VADER", "SQLite"],
+    featured: true,
+    caseStudy: {
+      overview:
+        "RON is a web companion that listens, reads the emotional tone of each message, suggests CBT techniques, and escalates to helpline resources when a message signals crisis.",
+      problemStatement:
+        "A plain chatbot answers words, not feelings. A support tool needs to track mood over time, notice sarcasm and other languages, and never miss a crisis signal.",
+      solution:
+        "Each message goes through a layered sentiment pipeline (VADER and TextBlob, then DistilBERT and a multilingual XLM-RoBERTa model, plus a sarcasm detector). The result picks an emotion level and CBT technique for the LLM prompt. Crisis keywords bypass everything and return helpline resources.",
+      architecture: [
+        { id: "a1", label: "User", description: "Types or speaks (browser Web Speech API) in the chat." },
+        { id: "a2", label: "Flask app", description: "Login, chat, diary and mood APIs; SQLite through Flask-SQLAlchemy." },
+        { id: "a3", label: "Sentiment pipeline", description: "VADER + TextBlob baseline; DistilBERT SST-2; XLM-RoBERTa multilingual; spaCy-based sarcasm detection." },
+        { id: "a4", label: "Safety layer", description: "Regex crisis detection that returns helpline resources and logs the event." },
+        { id: "a5", label: "LLM", description: "OpenRouter chat completion with a CBT system prompt and the detected emotion." },
+        { id: "a6", label: "Mood insights", description: "Diary, mood tracker with time-weighted trends, personalised responses and a report page." },
+      ],
+      techStack: ["Python", "Flask", "Flask-SQLAlchemy", "SQLite", "OpenRouter", "Hugging Face Transformers", "NLTK VADER", "TextBlob", "spaCy", "JavaScript"],
+      keyFeatures: [
+        "Five emotion levels from Joyful to Critical",
+        "Crisis-keyword escalation with helpline resources",
+        "Diary and mood tracker with time-weighted trends",
+        "Multilingual sentiment and sarcasm detection",
+        "Voice input in the browser",
+      ],
+      challenges: [
+        "Balancing a warm, natural tone with strict safety behaviour",
+        "Sarcasm and mixed languages break simple sentiment scores",
+      ],
+      results: [
+        "Working web app with chat, diary, mood tracking and reports",
+        "Test scripts for features, ML improvements and the report API",
+      ],
+      lessonsLearned: [
+        "Safety rules belong outside the LLM, where they can't be talked around",
+        "Layering cheap and heavy sentiment models keeps responses fast",
+      ],
+      gallery: [],
+    },
+  },
+  {
+    id: "langgraph-rag",
+    band: "language",
+    data: "PDF, DOCX and TXT documents",
+    slug: "langgraph-document-rag",
+    title: "Document RAG with LangGraph",
+    category: "Generative AI · RAG",
+    context: "Personal project",
+    codeUrl: "https://github.com/LNPrasad-droid/rag",
+    summary:
+      "Upload PDF, DOCX or text files and ask questions; answers cite the exact file and page.",
+    thumbnail: "/images/projects/langgraph-rag/thumbnail.svg",
+    technologies: ["LangChain", "LangGraph", "ChromaDB", "Hugging Face", "OpenRouter", "FastAPI"],
+    caseStudy: {
+      overview:
+        "A small, clean retrieval-augmented generation service with a LangGraph state machine, a persistent Chroma store and source citations.",
+      problemStatement:
+        "LLMs answer confidently from memory. For questions about your own documents you need answers grounded in the text, with a citation you can check.",
+      solution:
+        "Documents are chunked with metadata, embedded with MiniLM and stored in Chroma. A LangGraph graph retrieves the top chunks, then generates an answer with a strict 'context only' prompt and returns the unique file/page sources.",
+      architecture: [
+        { id: "a1", label: "Upload", description: "FastAPI /upload accepts PDF, DOCX and TXT." },
+        { id: "a2", label: "Ingestion", description: "LangChain loaders → recursive chunking (500/50) with file and page metadata." },
+        { id: "a3", label: "Embeddings", description: "Hugging Face all-MiniLM-L6-v2." },
+        { id: "a4", label: "Vector store", description: "Persistent ChromaDB." },
+        { id: "a5", label: "LangGraph", description: "retrieve (k=4) → generate, with an LRU cache for repeated questions." },
+        { id: "a6", label: "Answer", description: "FastAPI /ask returns the answer plus file and page citations." },
+      ],
+      techStack: ["Python", "FastAPI", "LangChain", "LangGraph", "ChromaDB", "Hugging Face embeddings", "OpenRouter"],
+      keyFeatures: [
+        "Page-level source citations",
+        "LangGraph state machine for the RAG flow",
+        "Bounded LRU cache for repeated questions",
+        "Configurable model and chunking through environment variables",
+      ],
+      challenges: ["Keeping citations exact through chunking", "Refusing to answer when the context doesn't contain the answer"],
+      results: ["Working /upload and /ask API with cited answers"],
+      lessonsLearned: ["Small, explicit graphs are easier to test and extend than one big chain"],
+      gallery: [],
     },
   },
 ];

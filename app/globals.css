@@ -1,83 +1,103 @@
 @import "tailwindcss";
 
 /* -------------------------------------------------------------------- */
-/* Design tokens — Leo's Portfolio                                      */
+/* Design tokens: "Night pass" (Earth observation / ground station)      */
+/* Old token names are kept as aliases so every component picks up the  */
+/* new palette; new names (ink, signal, band-*) are used going forward. */
 /* -------------------------------------------------------------------- */
 
 :root {
-  /* Backgrounds */
-  --bg-primary: #121214;
-  --bg-secondary: #1a1a1e;
-  --surface-card: #202024;
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-strong: rgba(255, 255, 255, 0.12);
+  /* Night-side ink, not black */
+  --ink: #08111c;
+  --ink-raised: #0e1a29;
+  --line: #22344a;
+  --line-strong: #33495f;
 
-  /* Accents */
-  --accent-blue: #3b82f6;
-  --accent-blue-soft: rgba(59, 130, 246, 0.16);
-  --accent-cyan: #2dd4bf;
-  --accent-violet: #8b5cf6;
+  /* Text (all ≥ 8:1 on --ink) */
+  --text: #e6edf5;
+  --text-muted: #a3b3c6;
 
-  /* Text */
-  --text-primary: #f5f5f7;
-  --text-secondary: #a1a1aa;
-  --text-tertiary: #71717a;
+  /* Interaction: links, focus, the satellite */
+  --signal: #46d3c9;
+  --signal-ink: #04201d;
 
-  /* Radii */
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 22px;
+  /* Sensor "false-colour" bands: one per data type, used to tag projects */
+  --band-vegetation: #86cf77; /* NDVI / optical */
+  --band-thermal: #f2925a; /* land surface temperature */
+  --band-radar: #9db2ff; /* SAR / multi-source */
+  --band-language: #c9a8ff; /* text / NLP */
 
-  /* Easing */
+  /* Aliases for older class names */
+  --bg-primary: var(--ink);
+  --bg-secondary: var(--ink-raised);
+  --surface-card: var(--ink-raised);
+  --border-subtle: var(--line);
+  --border-strong: var(--line-strong);
+  --accent-blue: var(--signal);
+  --accent-blue-soft: rgba(70, 211, 201, 0.18);
+  --accent-cyan: var(--signal);
+  --accent-violet: var(--band-radar);
+  --text-primary: var(--text);
+  --text-secondary: var(--text-muted);
+  --text-tertiary: var(--text-muted);
+
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out-smooth: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 @theme inline {
+  --color-ink: var(--ink);
+  --color-ink-raised: var(--ink-raised);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-signal: var(--signal);
+  --color-signal-ink: var(--signal-ink);
+  --color-band-vegetation: var(--band-vegetation);
+  --color-band-thermal: var(--band-thermal);
+  --color-band-radar: var(--band-radar);
+  --color-band-language: var(--band-language);
+
   --color-bg-primary: var(--bg-primary);
   --color-bg-secondary: var(--bg-secondary);
   --color-surface-card: var(--surface-card);
   --color-border-subtle: var(--border-subtle);
   --color-border-strong: var(--border-strong);
-
   --color-accent-blue: var(--accent-blue);
   --color-accent-cyan: var(--accent-cyan);
   --color-accent-violet: var(--accent-violet);
-
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-text-tertiary: var(--text-tertiary);
 
-  /*
-   * System font stacks — chosen instead of next/font/google so the project
-   * builds with zero network dependency. To use real Inter / Manrope /
-   * JetBrains Mono webfonts instead, re-introduce next/font/google in
-   * app/layout.tsx and point these three variables at the resulting
-   * font CSS variables (--font-inter, etc).
-   */
-  --font-sans: -apple-system, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-display: "Manrope", -apple-system, "Inter", "Segoe UI", Roboto, sans-serif;
-  --font-mono: "JetBrains Mono", "SF Mono", "Fira Code", ui-monospace, monospace;
+  /* Fonts are loaded with next/font in app/layout.tsx */
+  --font-sans: var(--font-archivo), "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: var(--font-archivo), "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "Cascadia Mono", monospace;
 }
 
-* {
-  border-color: var(--border-subtle);
+/* Base styles live in the base layer so Tailwind utilities (border-*, etc.) win */
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background: var(--ink);
+  }
+
+  body {
+    background: var(--ink);
+    color: var(--text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
 }
 
-html {
-  scroll-behavior: smooth;
-  background: var(--bg-primary);
-}
-
-body {
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: var(--font-sans), system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-/* Respect reduced motion preference globally */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -89,110 +109,97 @@ body {
   }
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg-primary);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
-  border-radius: 999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-tertiary);
-}
-
-/* Selection */
 ::selection {
-  background: var(--accent-blue-soft);
-  color: var(--text-primary);
+  background: rgba(70, 211, 201, 0.3);
+  color: var(--text);
 }
 
-/* Visible focus states for accessibility */
 :focus-visible {
-  outline: 2px solid var(--accent-blue);
+  outline: 2px solid var(--signal);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
 /* -------------------------------------------------------------------- */
-/* Reusable utility classes                                             */
+/* Type                                                                 */
+/* -------------------------------------------------------------------- */
+
+/* Expanded display width: the mission-patch voice */
+.display {
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-variation-settings: "wdth" 125;
+  letter-spacing: -0.01em;
+}
+
+/* Only for real data: coordinates, dates, telemetry, sensor names */
+.data {
+  font-family: var(--font-mono);
+  font-feature-settings: "zero" 1;
+}
+
+/* -------------------------------------------------------------------- */
+/* Utilities kept for existing components                               */
 /* -------------------------------------------------------------------- */
 
 .glass {
-  background: rgba(18, 18, 20, 0.65);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  border: 1px solid var(--border-subtle);
+  background: rgba(8, 17, 28, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--line);
 }
 
 .surface-card {
-  background: var(--surface-card);
-  border: 1px solid var(--border-subtle);
+  background: var(--ink-raised);
+  border: 1px solid var(--line);
 }
 
 .text-gradient {
-  background: linear-gradient(120deg, #ffffff 0%, #a5b4fc 45%, var(--accent-cyan) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--signal);
 }
 
 .accent-line {
-  background: linear-gradient(90deg, var(--accent-blue), var(--accent-violet));
-}
-
-.grain-overlay {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.03;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background: var(--signal);
 }
 
 .font-mono-tag {
-  font-family: var(--font-mono), monospace;
-  letter-spacing: 0.04em;
+  font-family: var(--font-mono);
 }
 
-/* Keyframes */
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+/* A trace line arriving in the agent console / pipeline runner */
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-@keyframes blink-caret {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+/* Data packet moving along a pipeline edge */
+@keyframes packet {
+  from {
+    left: 0%;
+  }
+  to {
+    left: 100%;
+  }
 }
 
-@keyframes float-y {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
+/* Skip link */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  background: var(--signal);
+  color: var(--signal-ink);
+  padding: 0.5rem 0.9rem;
+  font-weight: 600;
+  border-radius: 2px;
 }
-
-.animate-pulse-glow {
-  animation: pulse-glow 2.4s ease-in-out infinite;
-}
-
-.animate-blink-caret {
-  animation: blink-caret 0.9s step-end infinite;
-}
-
-.animate-float-y {
-  animation: float-y 5s ease-in-out infinite;
-}
-
-@keyframes blob-bounce {
-  0%, 100% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(30px, -50px) scale(1.08); }
-  66% { transform: translate(-20px, 20px) scale(0.95); }
-}
-
-.animate-blob {
-  animation: blob-bounce 14s infinite alternate ease-in-out;
+.skip-link:focus {
+  top: 1rem;
 }

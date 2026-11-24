@@ -3,23 +3,18 @@ import type { ContactLink, NavItem } from "@/types";
 export const profile = {
   fullName: "Lakshmi Narasimha Prasad",
   displayName: "Leo",
-  roles: [
-    "AI Engineer",
-    "Generative AI",
-    "Agentic AI",
-    "Geospatial AI",
-    "Computer Vision",
-    "Full Stack AI Developer",
-  ],
+  headline: "AI/ML engineer working on Earth observation, data pipelines and agentic systems.",
   tagline:
-    "I build AI systems that turn raw satellite data, language, and pixels into decisions — end to end, from model to interface.",
+    "I build the pipelines that turn Sentinel and Landsat imagery into crop maps and solar-plant risk scores, and the APIs and agents that put those models in front of people.",
+  location: "Bengaluru, India",
+  availability: "B.E. AIML, 2026. Open to AI/ML engineer, data science and data engineering roles.",
   about: {
     summary:
-      "I'm an AI Engineer who works across the full stack of modern AI products — designing agentic systems, training and deploying computer vision models, and shipping the interfaces that make them usable. My background sits at the intersection of geospatial science and generative AI, which means I think as much about coordinate systems and sensor data as I do about prompts and embeddings.",
+      "B.E. in Artificial Intelligence & Machine Learning (CGPA 8.4, 2026). At MITCON I build Earth-observation ML pipelines on Google Earth Engine: Sentinel-1/2 crop detection and Landsat-8 thermal risk monitoring for solar plants, with gradient boosting, Random Forest and LSTM models.",
     goals:
-      "I'm focused on building AI systems that operate autonomously in the real world — agents that can observe, reason, and act on geospatial and visual data without constant human supervision. The next phase of AI products will be judged on reliability in production, not demo quality, and that's the problem space I want to keep solving.",
+      "I care about honest validation as much as model choice: spatial train/test splits, leakage checks, and saying clearly what a 30 m thermal pixel can and cannot tell you. I want to keep building geospatial and applied-AI systems that hold up outside a notebook.",
     interests:
-      "Outside of core engineering, I spend time on remote sensing research, contributing to open-source agentic frameworks, and exploring how multimodal models can be grounded in physical, spatial reality rather than just text.",
+      "Around the models I build the software: FastAPI and Flask services, RAG with LangGraph and ChromaDB, LLM reporting with OpenRouter and Ollama, and React dashboards. I also build NLP side projects, like RON, a CBT-style mental-health companion.",
   },
   resumeUrl: "/resume/leo-resume.pdf",
 } as const;
@@ -29,6 +24,7 @@ export const navItems: NavItem[] = [
   { id: "about", label: "About", href: "#about" },
   { id: "experience", label: "Experience", href: "#experience" },
   { id: "projects", label: "Projects", href: "#projects" },
+  { id: "agents", label: "Agent demo", href: "#agents" },
   { id: "skills", label: "Skills", href: "#skills" },
   { id: "education", label: "Education", href: "#education" },
   { id: "contact", label: "Contact", href: "#contact" },
@@ -38,15 +34,15 @@ export const contactLinks: ContactLink[] = [
   {
     id: "github",
     label: "GitHub",
-    value: "github.com/leo-prasad",
-    href: "https://github.com/",
+    value: "github.com/LNPrasad-droid",
+    href: "https://github.com/LNPrasad-droid",
     icon: "Github",
   },
   {
     id: "linkedin",
     label: "LinkedIn",
-    value: "linkedin.com/in/leo-prasad",
-    href: "https://linkedin.com/",
+    value: "linkedin.com/in/lakshmi-narsimha-prasad",
+    href: "https://www.linkedin.com/in/lakshmi-narsimha-prasad-44306827b",
     icon: "Linkedin",
   },
   {
