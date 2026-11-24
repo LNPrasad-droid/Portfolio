@@ -114,6 +114,26 @@ export function nextPassStart(ms: number, station: LatLon = GROUND_STATION): num
   return null;
 }
 
+/**
+ * The next visibility window over the station (or the current one, if the
+ * satellite is in view now). Start/end in ms; null if none within 48 h.
+ */
+export function passWindow(ms: number, station: LatLon = GROUND_STATION): { start: number; end: number } | null {
+  const step = 20_000;
+  let start: number | null = null;
+  if (isInView(ms, station)) {
+    // walk back to the rise
+    start = ms;
+    while (isInView(start - step, station) && ms - start < 30 * 60_000) start -= step;
+  } else {
+    start = nextPassStart(ms, station);
+  }
+  if (start === null) return null;
+  let end = start;
+  while (isInView(end + step, station) && end - start < 30 * 60_000) end += step;
+  return { start, end: end + step };
+}
+
 /** Ground track samples from `fromMin` to `toMin` minutes around `ms` */
 export function groundTrack(ms: number, fromMin: number, toMin: number, stepMin = 0.5): LatLon[] {
   const points: LatLon[] = [];

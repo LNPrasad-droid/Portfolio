@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { LeoLogo } from "@/components/ui/LeoLogo";
+import { OrbitProgress } from "@/components/layout/OrbitProgress";
 import { navItems, profile } from "@/data/profile";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { cn } from "@/lib/utils";
@@ -73,6 +74,8 @@ export function Navbar() {
           {mobileOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
+
+      <OrbitProgress />
 
       {mobileOpen && (
         <nav id="mobile-nav" className="glass border-t border-line px-6 py-3 lg:hidden" aria-label="Mobile">

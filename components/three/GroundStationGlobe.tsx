@@ -8,11 +8,29 @@ import {
   SATELLITE_RADIUS,
   groundTrack,
   isInView,
+  passWindow,
   satellitePosition,
   subsolarPoint,
   toVector,
 } from "@/lib/orbit";
+import { simNow } from "@/lib/simClock";
 import { usePrefersReducedMotion } from "@/hooks/usePointer";
+
+const PASS_MAX_POINTS = 128;
+
+/** Ground-track points for the next (or current) Bengaluru pass */
+function buildPass(now: number) {
+  const w = passWindow(now);
+  const arr = new Float32Array(PASS_MAX_POINTS * 3);
+  if (!w) return { arr, count: 0 };
+  const step = Math.max(10_000, (w.end - w.start) / (PASS_MAX_POINTS - 1));
+  let i = 0;
+  for (let t = w.start; t <= w.end && i < PASS_MAX_POINTS; t += step, i++) {
+    const p = satellitePosition(t);
+    arr.set(toVector(p.lat, p.lon, 1.006), i * 3);
+  }
+  return { arr, count: i };
+}
 
 export type CameraMode = "station" | "satellite";
 
@@ -20,6 +38,7 @@ const COLORS = {
   ocean: "#2a5a80",
   grid: "#2c4561",
   track: "#46d3c9",
+  pass: "#f2925a",
   station: "#e6edf5",
   atmosphere: "#46d3c9",
 };
@@ -34,7 +53,7 @@ function buildTrack(now: number) {
   return arr;
 }
 
-function Scene({ mode, reducedMotion }: { mode: CameraMode; reducedMotion: boolean }) {
+function Scene({ mode, speed, reducedMotion }: { mode: CameraMode; speed: number; reducedMotion: boolean }) {
   const invalidate = useThree((s) => s.invalidate);
 
   // ---- static geometry -------------------------------------------------
@@ -55,9 +74,19 @@ function Scene({ mode, reducedMotion }: { mode: CameraMode; reducedMotion: boole
   // Lazy state initialisers run once, so reading the clock here is fine
   const [track] = useState(() => {
     const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.BufferAttribute(buildTrack(Date.now()), 3));
+    g.setAttribute("position", new THREE.BufferAttribute(buildTrack(simNow()), 3));
     return new THREE.Line(g, new THREE.LineBasicMaterial({ color: COLORS.track, transparent: true, opacity: 0.85 }));
   });
+
+  // Highlighted path of the next pass over Bengaluru
+  const [pass] = useState(() => {
+    const { arr, count } = buildPass(simNow());
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(arr, 3));
+    g.setDrawRange(0, count);
+    return new THREE.Line(g, new THREE.LineBasicMaterial({ color: COLORS.pass, transparent: true, opacity: 0.95 }));
+  });
+  const passRef = useRef<THREE.Line>(null);
 
   const [downlink] = useState(() => {
     const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]);
@@ -70,25 +99,37 @@ function Scene({ mode, reducedMotion }: { mode: CameraMode; reducedMotion: boole
   const trackRef = useRef<THREE.Line>(null);
   const downlinkRef = useRef<THREE.Line>(null);
 
+  // Rebuild the ground track and next-pass path; faster during time-lapse
   useEffect(() => {
-    const id = setInterval(() => {
+    const refresh = () => {
+      const now = simNow();
       const line = trackRef.current;
-      if (!line) return;
-      (line.geometry.getAttribute("position") as THREE.BufferAttribute).set(buildTrack(Date.now()));
-      line.geometry.getAttribute("position").needsUpdate = true;
+      if (line) {
+        (line.geometry.getAttribute("position") as THREE.BufferAttribute).set(buildTrack(now));
+        line.geometry.getAttribute("position").needsUpdate = true;
+      }
+      const p = passRef.current;
+      if (p) {
+        const { arr, count } = buildPass(now);
+        (p.geometry.getAttribute("position") as THREE.BufferAttribute).set(arr);
+        p.geometry.getAttribute("position").needsUpdate = true;
+        p.geometry.setDrawRange(0, count);
+      }
       invalidate();
-    }, 30_000);
+    };
+    refresh();
+    const id = setInterval(refresh, speed > 1 ? 400 : 30_000);
     return () => clearInterval(id);
-  }, [invalidate]);
+  }, [invalidate, speed]);
 
   useEffect(
     () => () => {
-      [graticule, track, downlink].forEach((o) => {
+      [graticule, track, pass, downlink].forEach((o) => {
         o.geometry.dispose();
         (o.material as THREE.Material).dispose();
       });
     },
-    [graticule, track, downlink],
+    [graticule, track, pass, downlink],
   );
 
   // ---- refs --------------------------------------------------------------
@@ -102,7 +143,7 @@ function Scene({ mode, reducedMotion }: { mode: CameraMode; reducedMotion: boole
   const camTarget = useRef(new THREE.Vector3().copy(stationCam));
 
   useFrame((state, delta) => {
-    const now = Date.now();
+    const now = simNow();
     const t = state.clock.getElapsedTime();
 
     // Real sun → real day/night boundary
@@ -177,6 +218,7 @@ function Scene({ mode, reducedMotion }: { mode: CameraMode; reducedMotion: boole
 
       <primitive object={graticule} />
       <primitive ref={trackRef} object={track} />
+      <primitive ref={passRef} object={pass} />
       <primitive ref={downlinkRef} object={downlink} />
 
       <group position={stationPos}>
@@ -208,13 +250,13 @@ function Scene({ mode, reducedMotion }: { mode: CameraMode; reducedMotion: boole
   );
 }
 
-export function GroundStationGlobe({ mode }: { mode: CameraMode }) {
+export function GroundStationGlobe({ mode, speed = 1 }: { mode: CameraMode; speed?: number }) {
   const reducedMotion = usePrefersReducedMotion();
   const initial = useMemo(() => toVector(18, GROUND_STATION.lon, 3.1), []);
 
   return (
     <Canvas camera={{ position: initial, fov: 40 }} dpr={[1, 1.75]} gl={{ antialias: true, alpha: true }} aria-hidden="true">
-      <Scene mode={mode} reducedMotion={reducedMotion} />
+      <Scene mode={mode} speed={speed} reducedMotion={reducedMotion} />
     </Canvas>
   );
 }
