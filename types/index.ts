@@ -6,6 +6,7 @@
 
 export type SkillCategory =
   | "Programming Languages"
+  | "Geospatial & Remote Sensing"
   | "AI & Machine Learning"
   | "Generative AI"
   | "Frameworks"
@@ -88,6 +89,8 @@ export interface ProjectCaseStudy {
   gallery: GalleryImage[];
 }
 
+export type Band = "vegetation" | "thermal" | "radar" | "language";
+
 export interface Project {
   id: string;
   slug: string;
@@ -98,6 +101,16 @@ export interface Project {
   technologies: string[];
   caseStudy: ProjectCaseStudy;
   featured?: boolean;
+  /** Sensor "false-colour" band that tags the project's data type */
+  band: Band;
+  /** Short data-source line, e.g. "Sentinel-1 SAR, Sentinel-2 MSI" */
+  data: string;
+  /** Where the work was done, e.g. "MITCON internship" or "Personal project" */
+  context?: string;
+  /** Public repository URL, when the code can be shared */
+  codeUrl?: string;
+  /** Shown instead of a code link when the code is private (e.g. client data) */
+  codeNote?: string;
 }
 
 export interface ContactLink {

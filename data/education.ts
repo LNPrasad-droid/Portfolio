@@ -22,9 +22,7 @@ export const education: EducationEntry[] = [
     startDate: "2020",
     endDate: "2022",
     location: "Bengaluru, Karnataka",
-    highlights: [
-      "Completed with 75% aggregate score",
-    ],
+    highlights: ["Completed with 75% aggregate score"],
   },
   {
     id: "edu-sslc",
@@ -34,39 +32,45 @@ export const education: EducationEntry[] = [
     startDate: "2019",
     endDate: "2020",
     location: "Bengaluru, Karnataka",
-    highlights: [
-      "Completed with 89% aggregate score",
-    ],
+    highlights: ["Completed with 89% aggregate score"],
   },
 ];
 
+/** Certifications exactly as listed on the resume. */
 export const certifications: Certification[] = [
   {
-    id: "cert-aws-ml",
-    name: "AWS Certified Machine Learning – Specialty",
-    issuer: "Amazon Web Services",
-    date: "2024",
-    icon: "Cloud",
+    id: "cert-ai-certs",
+    name: "AI+ Foundation™",
+    issuer: "AI CERTs",
+    date: "",
+    icon: "BadgeCheck",
   },
   {
-    id: "cert-deep-learning",
-    name: "Deep Learning Specialization",
-    issuer: "DeepLearning.AI",
-    date: "2023",
+    id: "cert-infosys",
+    name: "NLP, Machine Learning, Generative AI, Python, Java",
+    issuer: "Infosys Springboard",
+    date: "",
     icon: "Brain",
   },
   {
-    id: "cert-gee",
-    name: "Google Earth Engine for Geospatial Analysis",
-    issuer: "Google",
-    date: "2023",
-    icon: "Satellite",
+    id: "cert-genz-ml",
+    name: "Machine Learning in Python",
+    issuer: "Genz Educate Wing Pvt. Ltd.",
+    date: "",
+    icon: "Cpu",
   },
   {
-    id: "cert-langchain",
-    name: "Building Agentic Systems with LangGraph",
-    issuer: "LangChain",
-    date: "2024",
-    icon: "Workflow",
+    id: "cert-simplilearn-sql",
+    name: "SQL for Data Science",
+    issuer: "Simplilearn",
+    date: "",
+    icon: "Database",
+  },
+  {
+    id: "cert-aiml",
+    name: "AIML Certification – AI & Machine Learning",
+    issuer: "",
+    date: "",
+    icon: "GraduationCap",
   },
 ];

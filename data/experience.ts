@@ -9,16 +9,17 @@ export const experience: ExperienceEntry[] = [
     startDate: "Jan 2026",
     endDate: "Present",
     summary:
-      "Built ML pipelines for satellite imagery analysis, crop classification, and anomaly detection workflows using multispectral imagery, thermal datasets, and ensemble ML models.",
+      "Earth-observation ML on Google Earth Engine: Sentinel-1/2 crop detection for 5 crops and Landsat-8 thermal risk monitoring for a utility-scale solar plant, with LLM-generated maintenance reports.",
     responsibilities: [
-      "Built ML pipelines for satellite imagery analysis using Sentinel-2 and Landsat datasets, processing 10,000+ geospatial data points for large-scale feature extraction and predictive monitoring",
-      "Designed crop classification system for 6 crop types (cotton, rice, papaya, pomegranate, mango, tea) using multispectral imagery with hyperparameter-optimized ensemble ML models",
-      "Applied OpenCV, TensorFlow, and PyTorch for computer vision workflows; optimized models using precision, recall, and F1-score evaluation",
+      "Built Earth Engine pipelines that turn KML field polygons into Sentinel-2 optical and Sentinel-1 SAR time-series features (cloud masking, dB conversion, spectral indices, phenology metrics)",
+      "Trained per-crop detectors for cotton, rice, mango, papaya and pomegranate (Random Forest with calibration, LightGBM, XGBoost, Keras LSTM), validated with field- and region-grouped cross-validation and leakage checks",
+      "Served crop detectors through FastAPI endpoints that take an uploaded KML and return per-field probabilities",
+      "Modelled solar panel temperature with a NOCT/albedo approach plus ERA5 and Open-Meteo weather, with XGBoost, LightGBM and CatBoost regressors for hourly offsets",
     ],
-    technologies: ["Python", "OpenCV", "TensorFlow", "PyTorch", "XGBoost", "LightGBM", "CatBoost", "Ollama", "Sentinel-2", "Landsat"],
+    technologies: ["Python", "Google Earth Engine", "Sentinel-1/2", "Landsat-8", "XGBoost", "LightGBM", "CatBoost", "TensorFlow", "GeoPandas", "FastAPI", "Folium", "OpenRouter"],
     achievements: [
-      "Developed solar hotspot and anomaly detection workflows using thermal imaging, reducing manual inspection effort by ~40%",
-      "Integrated Generative AI report generation via Ollama for automated anomaly summaries, cutting reporting time by ~30%",
+      "Built satellite-based thermal-risk monitoring for ~2,000 solar panel tables: Landsat-8 LST and Sentinel-2 NDVI anomalies combined into a zone-level risk index, energy-loss estimates and interactive maps",
+      "Automated zone-prioritised maintenance reports with an LLM (OpenRouter) generated from plant statistics",
     ],
   },
   {
@@ -29,15 +30,14 @@ export const experience: ExperienceEntry[] = [
     startDate: "Oct 2025",
     endDate: "May 2026",
     summary:
-      "Developed an AI-powered Student Management System with LLM-integrated chatbot, role-based access, and intelligent analytics using FastAPI backend and React frontend.",
+      "Built EduVerse AI, a student management system with a Flask REST API, MySQL storage, analytics dashboards and LLM-generated student performance analysis.",
     responsibilities: [
-      "Developed an AI-powered Student Management System with LLM-integrated chatbot, role-based access, and intelligent analytics using FastAPI backend and React frontend",
-      "Integrated PostgreSQL, Firebase Firestore, and Supabase for real-time data management",
-      "Implemented Firebase Authentication and BaaS workflows for scalable cloud-hosted operations",
+      "Built a Flask REST API with full student CRUD, search and filtering, session-based authentication and MySQL storage",
+      "Built dashboards with Chart.js for grade, department and semester analytics",
     ],
-    technologies: ["Python", "FastAPI", "React", "PostgreSQL", "Firebase", "Supabase", "LLM"],
+    technologies: ["Python", "Flask", "MySQL", "Ollama", "JavaScript", "Chart.js"],
     achievements: [
-      "Designed modular, production-oriented application architecture enabling AI/ML workflow extensibility and maintainability",
+      "Added LLM-generated student performance analysis with a local Ollama model (phi3:mini), with a rule-based fallback when the model is unavailable",
     ],
   },
   {
@@ -48,13 +48,14 @@ export const experience: ExperienceEntry[] = [
     startDate: "Mar 2025",
     endDate: "Sep 2025",
     summary:
-      "Built Sentiment Analysis and Fake News Detection pipelines using BERT transformer models and NLP preprocessing.",
+      "NLP and text classification: a fake-news classifier comparing classic ML models on TF-IDF features, and a BERT fine-tuning pipeline for sentiment analysis.",
     responsibilities: [
-      "Developed Fake News Detection pipeline using NLP preprocessing, tokenization, and transformer-based classification; evaluated with Scikit-learn metrics",
+      "Built a fake-news pipeline: NLTK preprocessing, TF-IDF features, and a comparison of Naive Bayes, Logistic Regression and other classic models with accuracy, F1 and confusion matrices",
+      "Implemented a BERT (bert-base-uncased) fine-tuning pipeline for sentiment classification with PyTorch and Hugging Face Transformers",
     ],
-    technologies: ["Python", "BERT", "Transformers", "NLP", "Scikit-learn"],
+    technologies: ["Python", "scikit-learn", "NLTK", "TF-IDF", "PyTorch", "Transformers", "BERT"],
     achievements: [
-      "Built Sentiment Analysis models using BERT transformer fine-tuning, achieving improved classification accuracy over baseline NLP approaches",
+      "Best fake-news model reached 0.997 test accuracy and 0.997 F1 on ~9,000 held-out articles",
     ],
   },
 ];

@@ -27,7 +27,7 @@
     <line x1="700" y1="180" x2="600" y2="220" stroke="#5eead4" stroke-width="1" opacity="0.4"/>
     <line x1="640" y1="120" x2="600" y2="220" stroke="#7c3aed" stroke-width="1" opacity="0.3"/>
   </g>
-  <text x="60" y="260" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#f5f5f7">Agentic Remote Sensing</text>
-  <text x="60" y="295" font-family="Arial, sans-serif" font-size="16" fill="#9a9aa2">Geospatial Automation</text>
+  <text x="60" y="260" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#f5f5f7">Agentic GeoAI Platform</text>
+  <text x="60" y="295" font-family="Arial, sans-serif" font-size="16" fill="#9a9aa2">Multi-agent Earth-observation pipeline</text>
   <rect x="60" y="330" width="56" height="3" fill="#7c3aed"/>
 </svg>

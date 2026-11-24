@@ -1,136 +1,129 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
-import { ArrowRight, FileDown } from "lucide-react";
+import { FileDown } from "lucide-react";
 import { profile } from "@/data/profile";
+import { GROUND_STATION, formatLatLon } from "@/lib/orbit";
+import { useTelemetry, formatCountdown, formatUtc } from "@/hooks/useTelemetry";
+import type { CameraMode } from "@/components/three/GroundStationGlobe";
+import { cn } from "@/lib/utils";
 
-const AICore = dynamic(() => import("@/components/three/AICore").then((m) => m.AICore), {
-  ssr: false,
-  loading: () => (
-    <div className="flex h-full w-full items-center justify-center">
-      <div className="h-40 w-40 animate-pulse-glow rounded-full bg-accent-blue/10" />
-    </div>
-  ),
-});
+const GroundStationGlobe = dynamic(
+  () => import("@/components/three/GroundStationGlobe").then((m) => m.GroundStationGlobe),
+  { ssr: false, loading: () => <GlobePlaceholder /> },
+);
 
-interface TypingState {
-  text: string;
-  wordIndex: number;
-  deleting: boolean;
+function GlobePlaceholder() {
+  return (
+    <svg viewBox="0 0 200 200" className="h-full w-full p-10 opacity-60" aria-hidden="true">
+      <circle cx="100" cy="100" r="70" fill="#13283d" stroke="#2c4561" />
+      {[-45, -15, 15, 45].map((y) => (
+        <ellipse key={y} cx="100" cy={100 + y} rx={Math.sqrt(70 * 70 - y * y)} ry="6" fill="none" stroke="#2c4561" />
+      ))}
+    </svg>
+  );
 }
 
-/**
- * Cycles through `words`, typing and deleting each one. Modeled as a single
- * state object updated from inside a setTimeout callback (never synchronously
- * in the effect body) so each render only ever schedules one pending
- * transition instead of cascading multiple setState calls per tick.
- */
-function useTypingCycle(words: readonly string[], typeSpeed = 65, pause = 1600) {
-  const [state, setState] = useState<TypingState>({
-    text: "",
-    wordIndex: 0,
-    deleting: false,
-  });
+function Telemetry({ mode, setMode }: { mode: CameraMode; setMode: (m: CameraMode) => void }) {
+  const t = useTelemetry();
 
-  useEffect(() => {
-    const { text, wordIndex, deleting } = state;
-    const current = words[wordIndex];
+  const passText = !t
+    ? "Calculating orbit"
+    : t.inView
+      ? "In view now, downlink open"
+      : t.nextPassAt
+        ? `Next pass in ${formatCountdown(t.nextPassAt - t.now)} (${formatUtc(t.nextPassAt, false)} UTC)`
+        : "No pass in the next 48 h";
 
-    let delay = typeSpeed;
-    let next: TypingState;
+  return (
+    <div className="border-t border-line pt-4">
+      <dl className="data grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-[13px]">
+        <dt className="text-text-muted">UTC</dt>
+        <dd className="tabular-nums">{t ? formatUtc(t.now) : "--:--:--"}</dd>
+        <dt className="text-text-muted">Satellite</dt>
+        <dd className="tabular-nums">{t ? formatLatLon(t.satellite) : "-"}</dd>
+        <dt className="text-text-muted">Sun overhead</dt>
+        <dd className="tabular-nums">{t ? formatLatLon(t.subsolar) : "-"}</dd>
+        <dt className="text-text-muted">{GROUND_STATION.name}</dt>
+        <dd className={cn(t?.inView && "text-signal")} aria-live="polite">
+          {passText}
+        </dd>
+      </dl>
 
-    if (!deleting && text.length < current.length) {
-      next = { text: current.slice(0, text.length + 1), wordIndex, deleting: false };
-    } else if (!deleting && text.length === current.length) {
-      delay = pause;
-      next = { text, wordIndex, deleting: true };
-    } else if (deleting && text.length > 0) {
-      delay = typeSpeed / 1.6;
-      next = { text: current.slice(0, text.length - 1), wordIndex, deleting: true };
-    } else {
-      next = { text: "", wordIndex: (wordIndex + 1) % words.length, deleting: false };
-    }
-
-    const timeout = setTimeout(() => setState(next), delay);
-    return () => clearTimeout(timeout);
-  }, [state, words, typeSpeed, pause]);
-
-  return state.text;
+      <div className="mt-4 flex flex-wrap items-center gap-2" role="group" aria-label="Globe camera">
+        {(
+          [
+            ["station", "Ground station view"],
+            ["satellite", "Follow satellite"],
+          ] as const
+        ).map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => setMode(value)}
+            aria-pressed={mode === value}
+            className={cn(
+              "rounded-sm border px-3 py-1.5 text-sm transition-colors",
+              mode === value
+                ? "border-signal bg-signal text-signal-ink"
+                : "border-line-strong text-text hover:border-signal",
+            )}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      <p className="mt-3 max-w-md text-xs leading-relaxed text-text-muted">
+        Live sun position and Earth rotation. The satellite follows a simulated orbit with Sentinel-2 parameters
+        (786 km, sun-synchronous, 10:30 descending node).
+      </p>
+    </div>
+  );
 }
 
 export function Hero() {
-  const typedText = useTypingCycle(profile.roles);
+  const [mode, setMode] = useState<CameraMode>("station");
 
   return (
-    <section
-      id="home"
-      className="relative flex min-h-screen items-center overflow-hidden pt-28 pb-16"
-    >
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 px-6 lg:grid-cols-2 lg:gap-8">
-        {/* Left: copy */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-        >
-          <p className="font-mono-tag text-sm text-accent-cyan">Hi, I&apos;m</p>
-          <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-text-primary sm:text-5xl lg:text-6xl">
+    <section id="home" className="relative overflow-hidden pt-28 pb-20 lg:pt-32">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-12">
+        <div>
+          <p className="data text-sm text-text-muted">
+            {formatLatLon({ lat: GROUND_STATION.lat, lon: GROUND_STATION.lon })} {profile.location}
+          </p>
+          <h1 className="display mt-4 text-[2.6rem] font-semibold leading-[1.02] sm:text-6xl lg:text-[4.1rem]">
             {profile.fullName}
           </h1>
+          <p className="mt-5 text-xl text-text sm:text-2xl">{profile.headline}</p>
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-text-muted sm:text-lg">{profile.tagline}</p>
+          <p className="mt-5 text-sm text-text-muted">{profile.availability}</p>
 
-          <div className="mt-4 h-9 font-display text-xl font-medium text-text-secondary sm:text-2xl">
-            <span className="text-gradient">{typedText}</span>
-            <span className="animate-blink-caret text-accent-blue">|</span>
-          </div>
-
-          <p className="mt-6 max-w-lg text-base leading-relaxed text-text-secondary">
-            {profile.tagline}
-          </p>
-
-          <div className="mt-9 flex flex-wrap items-center gap-4">
+          <div className="mt-8 flex flex-wrap items-center gap-3">
             <a
               href="#projects"
-              className="group inline-flex items-center gap-2 rounded-full bg-text-primary px-6 py-3 text-sm font-semibold text-bg-primary transition-transform duration-300 hover:scale-[1.03]"
+              className="rounded-sm bg-signal px-5 py-3 text-sm font-semibold text-signal-ink transition-[filter] hover:brightness-110"
             >
-              Explore My Work
-              <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
+              See projects
             </a>
             <a
               href={profile.resumeUrl}
               download
-              className="inline-flex items-center gap-2 rounded-full border border-border-strong px-6 py-3 text-sm font-semibold text-text-primary transition-colors hover:bg-white/[0.06]"
+              className="inline-flex items-center gap-2 rounded-sm border border-line-strong px-5 py-3 text-sm font-semibold text-text transition-colors hover:border-signal"
             >
-              <FileDown size={16} />
-              Download Resume
+              <FileDown size={16} aria-hidden="true" />
+              Download resume
             </a>
           </div>
-        </motion.div>
-
-        {/* Right: AI core */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-          className="relative h-[320px] sm:h-[420px] lg:h-[520px]"
-        >
-          <AICore />
-        </motion.div>
-      </div>
-
-      {/* Scroll cue */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.6 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 font-mono-tag text-xs text-text-tertiary"
-      >
-        <div className="flex flex-col items-center gap-2">
-          <span>Scroll</span>
-          <span className="h-8 w-px animate-pulse-glow bg-border-strong" />
         </div>
-      </motion.div>
+
+        <div>
+          <div className="relative mx-auto aspect-square w-full max-w-[460px]">
+            <GroundStationGlobe mode={mode} />
+          </div>
+          <Telemetry mode={mode} setMode={setMode} />
+        </div>
+      </div>
     </section>
   );
 }
