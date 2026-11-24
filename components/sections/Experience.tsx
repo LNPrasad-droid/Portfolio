@@ -1,17 +1,32 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { experience } from "@/data/experience";
+import { useInViewOnce } from "@/hooks/useInViewOnce";
+import { usePrefersReducedMotion } from "@/hooks/usePointer";
 import { cn } from "@/lib/utils";
 
 function Role({ entry, defaultOpen }: { entry: (typeof experience)[number]; defaultOpen: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
   const panelId = `${entry.id}-details`;
+  const ref = useRef<HTMLLIElement>(null);
+  // The node "acquires signal" when the role scrolls into view
+  const acquired = useInViewOnce(ref, 0.5);
 
   return (
-    <li className="grid gap-x-10 gap-y-2 border-b border-line py-8 md:grid-cols-[11rem_minmax(0,1fr)]">
+    <li ref={ref} className="relative grid gap-x-10 gap-y-2 border-b border-line py-8 md:grid-cols-[11rem_minmax(0,1fr)]">
+      <span
+        className={cn(
+          "absolute top-[2.35rem] -left-[calc(1.75rem+5px)] h-[11px] w-[11px] rounded-full border-2 transition-colors duration-500 md:-left-[calc(2.5rem+5px)]",
+          acquired ? "border-signal bg-signal" : "border-line-strong bg-ink",
+        )}
+        aria-hidden="true"
+      >
+        {acquired && <span className="absolute -inset-1.5 rounded-full border border-signal opacity-0 animate-[acquire_1.1s_ease-out]" />}
+      </span>
+
       <p className="data text-sm text-text-muted">
         {entry.startDate} – {entry.endDate}
       </p>
@@ -47,7 +62,7 @@ function Role({ entry, defaultOpen }: { entry: (typeof experience)[number]; defa
                   <li key={r}>{r}</li>
                 ))}
               </ul>
-              <p className={cn("data mt-4 text-xs leading-6 text-text-muted")}>{entry.technologies.join(", ")}</p>
+              <p className="data mt-4 text-xs leading-6 text-text-muted">{entry.technologies.join(", ")}</p>
             </motion.div>
           )}
         </AnimatePresence>
@@ -57,15 +72,29 @@ function Role({ entry, defaultOpen }: { entry: (typeof experience)[number]; defa
 }
 
 export function Experience() {
+  const listRef = useRef<HTMLOListElement>(null);
+  const reducedMotion = usePrefersReducedMotion();
+  // The timeline draws itself as you scroll through the section
+  const { scrollYProgress } = useScroll({ target: listRef, offset: ["start 75%", "end 55%"] });
+  const fill = useSpring(scrollYProgress, { stiffness: 140, damping: 28, mass: 0.4 });
+
   return (
     <section id="experience" className="relative py-24 sm:py-28" aria-labelledby="experience-title">
       <div className="mx-auto max-w-6xl px-6">
         <SectionHeading id="experience-title" title="Experience" />
-        <ol className="border-t border-line">
-          {experience.map((entry, i) => (
-            <Role key={entry.id} entry={entry} defaultOpen={i === 0} />
-          ))}
-        </ol>
+        <div className="relative pl-7 md:pl-10">
+          <span className="absolute top-0 bottom-0 left-0 w-px bg-line" aria-hidden="true" />
+          <motion.span
+            className="absolute top-0 bottom-0 left-0 w-px origin-top bg-signal"
+            style={{ scaleY: reducedMotion ? scrollYProgress : fill }}
+            aria-hidden="true"
+          />
+          <ol ref={listRef} className="border-t border-line">
+            {experience.map((entry, i) => (
+              <Role key={entry.id} entry={entry} defaultOpen={i === 0} />
+            ))}
+          </ol>
+        </div>
       </div>
     </section>
   );

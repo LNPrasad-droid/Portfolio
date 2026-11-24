@@ -188,6 +188,80 @@
   }
 }
 
+/* Timeline node acquiring signal */
+@keyframes acquire {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.2);
+  }
+}
+
+/* Section heading received like an image strip: a scan line sweeps across */
+@keyframes scan-reveal {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes scan-line {
+  0% {
+    left: 0%;
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+.scan-heading {
+  position: relative;
+  display: inline-block;
+}
+.scan-heading[data-scan="pending"] .scan-text {
+  clip-path: inset(0 100% 0 0);
+}
+.scan-heading[data-scan="play"] .scan-text {
+  animation: scan-reveal 0.75s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+.scan-heading[data-scan="play"]::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  background: var(--signal);
+  box-shadow: 0 0 12px var(--signal);
+  animation: scan-line 0.75s cubic-bezier(0.65, 0, 0.35, 1) both;
+  pointer-events: none;
+}
+
+/* Uplink: packets travelling from the button to the dish */
+@keyframes uplink {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(var(--uplink-distance, 64px));
+    opacity: 0;
+  }
+}
+
 /* Skip link */
 .skip-link {
   position: absolute;

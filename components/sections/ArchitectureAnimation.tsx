@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ArchitectureStage, Band } from "@/types";
 import { band as bands } from "@/lib/bands";
 import { usePrefersReducedMotion } from "@/hooks/usePointer";
+import { useInViewOnce } from "@/hooks/useInViewOnce";
 import { cn } from "@/lib/utils";
 
 const STAGE_MS = 900;
@@ -27,7 +28,7 @@ export function ArchitectureAnimation({ stages, band = "radar" }: { stages: Arch
 
   useEffect(() => stop, [stop]);
 
-  const run = () => {
+  const run = useCallback(() => {
     stop();
     if (reducedMotion) {
       setActive(stages.length);
@@ -40,13 +41,24 @@ export function ArchitectureAnimation({ stages, band = "radar" }: { stages: Arch
       setActive(i);
       if (i >= stages.length) stop();
     }, STAGE_MS);
-  };
+  }, [reducedMotion, stages.length, stop]);
+
+  // Runs once on its own when the pipeline scrolls into view
+  const rootRef = useRef<HTMLDivElement>(null);
+  const inView = useInViewOnce(rootRef, 0.5);
+  const autoRan = useRef(false);
+  useEffect(() => {
+    if (!inView || autoRan.current) return;
+    autoRan.current = true;
+    const id = setTimeout(run, 250);
+    return () => clearTimeout(id);
+  }, [inView, run]);
 
   const running = active >= 0 && active < stages.length;
   const progress = active < 0 ? 0 : Math.min(1, (active + (running ? 0.5 : 0)) / stages.length);
 
   return (
-    <div>
+    <div ref={rootRef}>
       <div className="mb-5 flex flex-wrap items-center gap-3">
         <button
           type="button"

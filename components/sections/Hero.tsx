@@ -5,7 +5,8 @@ import dynamic from "next/dynamic";
 import { FileDown } from "lucide-react";
 import { profile } from "@/data/profile";
 import { GROUND_STATION, formatLatLon } from "@/lib/orbit";
-import { useTelemetry, formatCountdown, formatUtc } from "@/hooks/useTelemetry";
+import { useTelemetry, useSimSpeed, formatCountdown, formatUtc } from "@/hooks/useTelemetry";
+import { live, setSpeed } from "@/lib/simClock";
 import type { CameraMode } from "@/components/three/GroundStationGlobe";
 import { cn } from "@/lib/utils";
 
@@ -25,8 +26,15 @@ function GlobePlaceholder() {
   );
 }
 
+const SPEEDS = [
+  { value: 1, label: "Live" },
+  { value: 60, label: "60×" },
+  { value: 600, label: "600×" },
+] as const;
+
 function Telemetry({ mode, setMode }: { mode: CameraMode; setMode: (m: CameraMode) => void }) {
   const t = useTelemetry();
+  const speed = useSimSpeed();
 
   const passText = !t
     ? "Calculating orbit"
@@ -39,19 +47,44 @@ function Telemetry({ mode, setMode }: { mode: CameraMode; setMode: (m: CameraMod
   return (
     <div className="border-t border-line pt-4">
       <dl className="data grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-[13px]">
-        <dt className="text-text-muted">UTC</dt>
-        <dd className="tabular-nums">{t ? formatUtc(t.now) : "--:--:--"}</dd>
+        <dt className="text-text-muted">{speed > 1 ? "Sim UTC" : "UTC"}</dt>
+        <dd className="tabular-nums">
+          {t ? formatUtc(t.now) : "--:--:--"}
+          {speed > 1 && <span className="ml-2 text-band-thermal">{speed}× time-lapse</span>}
+        </dd>
         <dt className="text-text-muted">Satellite</dt>
         <dd className="tabular-nums">{t ? formatLatLon(t.satellite) : "-"}</dd>
         <dt className="text-text-muted">Sun overhead</dt>
         <dd className="tabular-nums">{t ? formatLatLon(t.subsolar) : "-"}</dd>
         <dt className="text-text-muted">{GROUND_STATION.name}</dt>
-        <dd className={cn(t?.inView && "text-signal")} aria-live="polite">
+        <dd className={cn(t?.inView && "text-signal")} aria-live={speed > 1 ? "off" : "polite"}>
           {passText}
         </dd>
       </dl>
 
-      <div className="mt-4 flex flex-wrap items-center gap-2" role="group" aria-label="Globe camera">
+      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-3">
+        <div className="flex items-center gap-1" role="group" aria-label="Simulation speed">
+          {SPEEDS.map((s) => (
+            <button
+              key={s.value}
+              type="button"
+              aria-pressed={speed === s.value}
+              onClick={() => (s.value === 1 ? live() : setSpeed(s.value))}
+              className={cn(
+                "data rounded-sm border px-2.5 py-1.5 text-xs transition-colors",
+                speed === s.value ? "border-text bg-text text-ink" : "border-line-strong text-text-muted hover:text-text",
+              )}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+        <span className="flex items-center gap-2 text-xs text-text-muted">
+          <span className="h-0.5 w-5 bg-band-thermal" aria-hidden="true" /> next {GROUND_STATION.name} pass
+        </span>
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-2" role="group" aria-label="Globe camera">
         {(
           [
             ["station", "Ground station view"],
@@ -84,6 +117,7 @@ function Telemetry({ mode, setMode }: { mode: CameraMode; setMode: (m: CameraMod
 
 export function Hero() {
   const [mode, setMode] = useState<CameraMode>("station");
+  const speed = useSimSpeed();
 
   return (
     <section id="home" className="relative overflow-hidden pt-28 pb-20 lg:pt-32">
@@ -119,7 +153,7 @@ export function Hero() {
 
         <div>
           <div className="relative mx-auto aspect-square w-full max-w-[460px]">
-            <GroundStationGlobe mode={mode} />
+            <GroundStationGlobe mode={mode} speed={speed} />
           </div>
           <Telemetry mode={mode} setMode={setMode} />
         </div>
